@@ -7,6 +7,12 @@ class Foundation:
     def __init__(self, suit):
         self.piles = []
 
+    def is_game_won(self):
+        for pile in self.piles:
+            if len(pile) != 13:
+                return False
+        return True
+
     def add_card(self, pile_number, card):
         self.piles[pile_number].append(card)
 
