@@ -12,3 +12,17 @@ class Foundation:
 
     def get_top_card(self, pile_number):
         return self.piles[pile_number][-1]
+
+    def is_valid_move(self, pile_number, card):
+        if self.piles[pile_number] == []:
+            return card.get_rank() == 1
+
+        first_card_destination = self.piles[pile_number][-1]
+
+        if first_card_destination.get_suit() != card.get_suit():
+            return False
+
+        if first_card_destination.get_rank() != card.get_rank() - 1:
+            return False
+
+        return True
