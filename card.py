@@ -7,11 +7,11 @@ class Card:
     def __str__(self):
         return f"{self.rank} of {self.suit}"
 
-    def is_red(self):
-        return self.suit in ["Hearts", "Diamonds"]
-
-    def is_black(self):
-        return self.suit in ["Spades", "Clubs"]
+    def get_color(self):
+        if self.suit == "Hearts" or self.suit == "Diamonds":
+            return "red"
+        else:
+            return "black"
     
     def flip(self):
         self.face_up = not self.face_up
