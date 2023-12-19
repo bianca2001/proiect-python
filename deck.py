@@ -1,19 +1,14 @@
-from card.py import Card
+from card import Card
 import random
 
 
 class Deck:
     def __init__(self):
-        self.cards = self.getNewDeck()
-
-    def getNewDeck():
-        new_deck = []
+        self.cards = []
 
         for suit in ["Hearts", "Diamonds", "Spades", "Clubs"]:
             for rank in range(1, 14):
-                new_deck.append(Card(suit, rank))
-
-        return new_deck
+                self.cards.append(Card(suit, rank))
 
     def shuffle(self):
         random.shuffle(self.cards)
