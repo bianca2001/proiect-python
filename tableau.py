@@ -6,6 +6,8 @@ class Tableau:
             self.piles.append(deck.getCards(i+1))
             self.piles[i][-1].flip()
 
+        print(self.piles)
+
     def is_valid_move(self, destination_pile_number, card):
         if not card.is_face_up():
             return False
@@ -37,3 +39,9 @@ class Tableau:
 
     def remove_card_on_top(self, pile_number, card):
         self.piles[pile_number].pop()
+
+    def __getitem__(self, item):
+        return self.piles[item]
+
+    def __len__(self):
+        return len(self.piles)

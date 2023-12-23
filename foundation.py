@@ -4,7 +4,7 @@
 # a starter card.
 
 class Foundation:
-    def __init__(self, suit):
+    def __init__(self):
         self.piles = []
 
     def is_game_won(self):
