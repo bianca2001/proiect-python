@@ -1,25 +1,34 @@
 from card import Card
 import random
+import time
 
 
 class Deck:
     def __init__(self):
         self.cards = []
+        self.used_cards = []
 
-        for suit in ["Hearts", "Diamonds", "Spades", "Clubs"]:
+        for suit in ["♥", "♦", "♠", "♣"]:
             for rank in range(1, 14):
                 self.cards.append(Card(suit, rank))
+        print(len(self.cards))
 
     def shuffle(self):
+        random.seed(int(time.time()))
         random.shuffle(self.cards)
 
     def deal(self, previous_cards=[]):
+        self.used_cards.extend(previous_cards)
         next_cards = []
 
-        for i in range(3):
-            next_cards.append(self.cards.pop())
+        if len(self.cards) == 0:
+            self.cards = self.used_cards
+            self.used_cards = []
 
-        self.cards.append(previous_cards)
+        for i in range(min(3, len(self.cards))):
+            next_cards.append(self.cards.pop(0))
+
+        print(next_cards)
         return next_cards
 
     def getCards(self, number_of_cards):
