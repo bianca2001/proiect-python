@@ -29,3 +29,6 @@ class Deck:
             new_cards.append(self.cards.pop())
 
         return new_cards
+
+    def __getitem__(self, item):
+        return self.cards[item]

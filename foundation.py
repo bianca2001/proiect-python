@@ -1,10 +1,5 @@
-#A kind of pile. 
-# The goal of many solitaire games is to eventually move all the cards onto the foundation piles. 
-# Usually the foundations are empty at the start of a game, but in some games they may begin with 
-# a starter card.
-
 class Foundation:
-    def __init__(self, suit):
+    def __init__(self):
         self.piles = []
 
     def is_game_won(self):

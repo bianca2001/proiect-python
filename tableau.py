@@ -37,3 +37,9 @@ class Tableau:
 
     def remove_card_on_top(self, pile_number, card):
         self.piles[pile_number].pop()
+
+    def __getitem__(self, item):
+        return self.piles[item]
+
+    def __len__(self):
+        return len(self.piles)
