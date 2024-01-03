@@ -13,24 +13,26 @@ class Tableau:
         first_card_destination = self.piles[destination_pile_number][-1]
 
         if first_card_destination.get_color() == card.get_color():
+            print("Same color:", first_card_destination.get_color(),
+                  card.get_color())
             return False
 
         if first_card_destination.get_rank() != card.get_rank() + 1:
+            print("Not one less:", first_card_destination.get_rank(),
+                  card.get_rank())
             return False
 
         return True
 
     def move_pile_to_pile(self, source_pile_number, destination_pile_number,
-                          card):
-        if self.is_valid_move(source_pile_number, card):
-            source_pile = self.piles[source_pile_number]
-            destination_pile = self.piles[destination_pile_number]
-
-            for i in range(len(source_pile)):
-                if source_pile[i] == card:
-                    for j in range(i, len(source_pile)):
-                        destination_pile.append(source_pile.pop())
-                    break
+                          card_pos):
+        source_pile = self.piles[source_pile_number]
+        destination_pile = self.piles[destination_pile_number]
+        if self.is_valid_move(destination_pile_number, source_pile[card_pos]):
+            for j in range(card_pos, len(source_pile)):
+                destination_pile.append(source_pile.pop(card_pos))
+            if not source_pile[-1].is_face_up():
+                source_pile[-1].flip()
 
     def is_card_on_top(self, pile_number, card):
         return self.piles[pile_number][-1] == card
@@ -43,3 +45,6 @@ class Tableau:
 
     def __len__(self):
         return len(self.piles)
+
+    def __str__(self):
+        return str(self.piles)

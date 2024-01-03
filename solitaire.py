@@ -6,6 +6,7 @@ from foundation import Foundation
 class Solitaire:
     def __init__(self):
         self.deck = Deck()
+        self.deck.shuffle()
         self.tableau = Tableau(self.deck)
         self.foundation = Foundation()
 

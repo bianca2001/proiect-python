@@ -4,11 +4,8 @@ class Card:
         self.rank = rank
         self.face_up = False
 
-    def __str__(self):
-        return f"{self.rank} of {self.suit}"
-
     def get_color(self):
-        if self.suit == "Hearts" or self.suit == "Diamonds":
+        if self.suit in ["♥", "♦"]:
             return "red"
         else:
             return "black"
