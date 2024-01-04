@@ -1,6 +1,6 @@
 class Foundation:
     def __init__(self):
-        self.piles = []
+        self.piles = [[], [], [], []]
 
     def is_game_won(self):
         for pile in self.piles:
@@ -15,6 +15,7 @@ class Foundation:
         return self.piles[pile_number][-1]
 
     def is_valid_move(self, pile_number, card):
+        print("piles", self.piles)
         if self.piles[pile_number] == []:
             return card.get_rank() == 1
 
