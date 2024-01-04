@@ -12,7 +12,11 @@ fundation_pile = None
 board_frame = None
 
 
-def draw_card(card, rank, suit, color):
+def draw_card(card, rank, suit, color, flipped=True):
+    if not flipped:
+        card.create_rectangle(2, 2, card_width - 2, card_height - 2,
+                              fill="lightblue", outline="black")
+        return
     card.create_rectangle(2, 2, card_width - 2, card_height - 2,
                           outline=color)
     card.create_text(15, 15, text=rank, font=("Arial", 14), fill=color)
@@ -21,6 +25,10 @@ def draw_card(card, rank, suit, color):
 
 def create_cards():
     global board_frame
+
+    if board_frame:
+        board_frame.destroy()
+
     board_frame = tk.Frame(root)
     board_frame.place(relx=0.5, rely=0.98, anchor="s")
     board = tk.Canvas(board_frame, width=card_width * 7 + 50 * 8,
@@ -30,19 +38,18 @@ def create_cards():
     piles = game.tableau
     for i in range(7):
         for j in range(len(piles[i])):
-
             card = tk.Canvas(board_frame, width=card_width, height=card_height,
                              bg="white", highlightthickness=0)
             card.bind("<Button-1>", on_drag_start)
             card.bind("<B1-Motion>", on_drag_motion)
             card.bind("<ButtonRelease-1>",
-                      functools.partial(on_drop_board, pile=i, card_pos=j))
+                      functools.partial(on_drop, pile=i, card_pos=j))
             card.place(x=i * (card_width + 50) + 50, y=j * 45)
 
             print(piles[i][j].get_color())
 
             draw_card(card, piles[i][j].rank, piles[i][j].suit,
-                      piles[i][j].get_color())
+                      piles[i][j].get_color(), piles[i][j].is_face_up())
 
 
 # Function to create foundation piles (simple rectangles)
@@ -60,6 +67,10 @@ def create_foundation():
         # Draw a rectangle for foundation pile
         foundation_pile.create_rectangle(2, 2, card_width - 2, card_height - 2,
                                          outline="black")
+
+        foundation_pile.bind("<Button-1>", on_drag_start)
+        foundation_pile.bind("<B1-Motion>", on_drag_motion)
+        foundation_pile.bind("<ButtonRelease-1>", on_drop)
 
 
 # Function to create stock and waste piles (simple rectangles)
@@ -126,7 +137,7 @@ def on_drag_motion(event):
     event.widget.start_y = event.y
 
 
-def on_drop_board(event, pile, card_pos):
+def on_drop(event, pile, card_pos):
     global drag_object
 
     destination_pile = None
