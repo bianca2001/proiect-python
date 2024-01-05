@@ -8,6 +8,7 @@ class Tableau:
 
     def is_valid_move(self, destination_pile_number, card):
         if not card.is_face_up():
+            print("Not face up")
             return False
 
         first_card_destination = self.piles[destination_pile_number][-1]
@@ -39,6 +40,15 @@ class Tableau:
 
     def remove_card_on_top(self, pile_number, card):
         self.piles[pile_number].pop()
+
+    def add_card(self, pile_number, card):
+        print("Trying to add card:", card, "to pile:", pile_number)
+        print(card.rank)
+
+        if self.is_valid_move(pile_number, card):
+            self.piles[pile_number].append(card)
+        else:
+            print("Invalid move")
 
     def __getitem__(self, item):
         return self.piles[item]

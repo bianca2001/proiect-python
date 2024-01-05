@@ -80,6 +80,7 @@ def create_foundation():
 
 # Function to create stock and waste piles (simple rectangles)
 def create_stock_waste():
+    global waste_pile_cards
     stock_waste_frame = tk.Frame(root)
     stock_waste_frame.place(relx=1, rely=0, anchor="ne")
 
@@ -115,7 +116,7 @@ def create_stock_waste():
         if i == len(waste_pile_cards) - 1:
             card.bind("<Button-1>", on_drag_start)
             card.bind("<B1-Motion>", on_drag_motion)
-            # card.bind("<ButtonRelease-1>", on_drop)
+            card.bind("<ButtonRelease-1>", on_drop)
 
 
 def change_waste(event):
@@ -142,7 +143,9 @@ def on_drag_motion(event):
     event.widget.start_y = event.y
 
 
-def on_drop(event, pile, card_pos):
+def on_drop(event, pile=None, card_pos=None):
+    global waste_pile_cards
+
     if event.y_root < board_frame.winfo_rooty():
         global foundation_frame
         print("Maybe drop on foundation")
@@ -200,8 +203,12 @@ def on_drop(event, pile, card_pos):
         create_cards()
         return
 
-    print("pile:", pile)
-    print("card_pos:", card_pos)
+    if pile is None:
+        game.tableau.add_card(destination_pile, waste_pile_cards[-1])
+        create_stock_waste()
+        create_cards()
+        return
+
     game.tableau.move_pile_to_pile(pile, destination_pile,
                                    card_pos)
     create_cards()

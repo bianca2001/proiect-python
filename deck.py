@@ -26,7 +26,9 @@ class Deck:
             self.used_cards = []
 
         for i in range(min(3, len(self.cards))):
-            next_cards.append(self.cards.pop(0))
+            aux = self.cards.pop(0)
+            aux.flip()
+            next_cards.append(aux)
 
         print(next_cards)
         return next_cards
