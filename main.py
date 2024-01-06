@@ -25,6 +25,7 @@ def draw_card(card, rank, suit, color, flipped=True):
 
 def create_cards():
     global board_frame
+    global game
 
     if board_frame:
         board_frame.destroy()
@@ -53,6 +54,7 @@ def create_cards():
 # Function to create foundation piles (simple rectangles)
 def create_foundation():
     global foundation_frame
+    global game
     foundation_frame = tk.Frame(root)
     foundation_frame.place(relx=0, rely=0, anchor="nw")
 
@@ -75,7 +77,8 @@ def create_foundation():
 
         foundation_pile.bind("<Button-1>", on_drag_start)
         foundation_pile.bind("<B1-Motion>", on_drag_motion)
-        foundation_pile.bind("<ButtonRelease-1>", on_drop)
+        foundation_pile.bind("<ButtonRelease-1>",
+                             functools.partial(on_drop, pile=i))
 
 
 # Function to create stock and waste piles (simple rectangles)
@@ -120,6 +123,7 @@ def create_stock_waste():
 
 
 def change_waste(event):
+    global game
     global waste_pile_cards
     waste_pile_cards = game.deck.deal(waste_pile_cards)
     create_stock_waste()
@@ -145,6 +149,7 @@ def on_drag_motion(event):
 
 def solve_drop_on_foundation(event, pile=None, card_pos=None):
     global foundation_frame
+    global game
     print("Maybe drop on foundation")
 
     if event.x_root > foundation_frame.winfo_rootx() + 4 * \
@@ -168,7 +173,8 @@ def solve_drop_on_foundation(event, pile=None, card_pos=None):
         create_cards()
         return
 
-    if pile is None:
+    if card_pos is None:
+        print("Trying to move card from waste to foundation")
         if game.foundation.is_valid_move(destination_pile,
                                          waste_pile_cards[-1]):
             game.foundation.add_card(destination_pile,
@@ -186,17 +192,20 @@ def solve_drop_on_foundation(event, pile=None, card_pos=None):
         game.foundation.add_card(destination_pile,
                                  game.tableau[pile][card_pos])
         game.tableau.remove_card_on_top(pile, game.tableau[pile][card_pos])
-        if game.tableau[pile]:
+        if game.tableau[pile] and not game.tableau[pile][-1].is_face_up():
             game.tableau[pile][-1].flip()
         create_foundation()
         create_cards()
         return
 
     create_cards()
+    create_foundation()
+    create_stock_waste()
 
 
 def on_drop(event, pile=None, card_pos=None):
     global waste_pile_cards
+    global game
 
     # Drop on foundation
     if event.y_root < board_frame.winfo_rooty():
@@ -218,17 +227,41 @@ def on_drop(event, pile=None, card_pos=None):
 
     if destination_pile is None:
         create_cards()
+        create_foundation()
+        create_stock_waste()
         return
 
-    if pile is None:
-        game.tableau.add_card(destination_pile, waste_pile_cards[-1])
-        create_stock_waste()
-        create_cards()
-        return
+    print("Pile:", pile)
+    if card_pos is None:
+        print("Trying to move card from waste or fundation to tableau")
+
+        if pile is not None:
+            print("Trying to move pile", pile, "to pile", destination_pile)
+            print("Card:", game.foundation.piles[pile][-1].rank,
+                  game.foundation.piles[pile][-1].suit,
+                  game.foundation.piles[pile][-1].get_color())
+            if game.tableau.is_valid_move(destination_pile,
+                                          game.foundation.piles[pile][-1]):
+                game.tableau.add_card(destination_pile,
+                                      game.foundation.piles[pile][-1])
+                game.foundation.remove_card(pile)
+            create_foundation()
+            create_cards()
+            return
+        else:
+            if game.tableau.is_valid_move(destination_pile,
+                                          waste_pile_cards[-1]):
+                game.tableau.add_card(destination_pile, waste_pile_cards[-1])
+                waste_pile_cards.pop()
+            create_stock_waste()
+            create_cards()
+            return
 
     game.tableau.move_pile_to_pile(pile, destination_pile,
                                    card_pos)
     create_cards()
+    create_foundation()
+    create_stock_waste()
 
 
 # Create cards, foundation piles, stock, and waste piles

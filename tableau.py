@@ -52,10 +52,7 @@ class Tableau:
         print("Trying to add card:", card, "to pile:", pile_number)
         print(card.rank)
 
-        if self.is_valid_move(pile_number, card):
-            self.piles[pile_number].append(card)
-        else:
-            print("Invalid move")
+        self.piles[pile_number].append(card)
 
     def __getitem__(self, item):
         return self.piles[item]

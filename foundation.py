@@ -29,5 +29,5 @@ class Foundation:
 
         return True
 
-    def remove_card(self, pile_number, card):
+    def remove_card(self, pile_number):
         self.piles[pile_number].pop()
