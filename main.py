@@ -3,6 +3,7 @@ from solitaire import Solitaire
 import functools
 root = tk.Tk()
 root.title("Solitaire")
+root.geometry("1000x800")
 
 card_height = 192
 card_width = 120
@@ -183,6 +184,9 @@ def solve_drop_on_foundation(event, pile=None, card_pos=None):
             create_stock_waste()
             create_foundation()
             create_cards()
+
+            if game.foundation.is_game_won():
+                create_won_window()
             return
         create_cards()
         return
@@ -196,6 +200,9 @@ def solve_drop_on_foundation(event, pile=None, card_pos=None):
             game.tableau[pile][-1].flip()
         create_foundation()
         create_cards()
+
+        if game.foundation.is_game_won():
+            create_won_window()
         return
 
     create_cards()
@@ -264,10 +271,23 @@ def on_drop(event, pile=None, card_pos=None):
     create_stock_waste()
 
 
+def create_won_window():
+    won_window = tk.Toplevel(root)
+    won_window.title("You won!")
+    won_window.geometry("300x150")
+    won_window.resizable(False, False)
+
+    won_label = tk.Label(won_window, text="You won!", font=("Arial", 20))
+    won_label.place(relx=0.5, rely=0.2, anchor="n")
+
+    ok_button = tk.Button(won_window, text="OK", font=("Arial", 15),
+                          command=root.destroy)
+    ok_button.place(relx=0.5, rely=0.8, anchor="s")
+
+
 # Create cards, foundation piles, stock, and waste piles
 create_stock_waste()
 create_cards()
 create_foundation()
-
 
 root.mainloop()

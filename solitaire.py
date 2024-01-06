@@ -26,3 +26,6 @@ class Solitaire:
                     self.foundation.is_valid_move(fundation_pile_number, card):
             self.tableau.add_card(tableau_pile_number, card)
             self.foundation.remove_card(fundation_pile_number, card)
+
+    def is_game_won(self):
+        return self.foundation.is_full()

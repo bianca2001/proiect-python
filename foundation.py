@@ -31,3 +31,9 @@ class Foundation:
 
     def remove_card(self, pile_number):
         self.piles[pile_number].pop()
+
+    def is_full(self):
+        for pile in self.piles:
+            if len(pile) != 13:
+                return False
+        return True
