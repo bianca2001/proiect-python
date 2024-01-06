@@ -27,7 +27,8 @@ class Deck:
 
         for i in range(min(3, len(self.cards))):
             aux = self.cards.pop(0)
-            aux.flip()
+            if not aux.is_face_up():
+                aux.flip()
             next_cards.append(aux)
 
         print(next_cards)

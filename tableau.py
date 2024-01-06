@@ -7,6 +7,13 @@ class Tableau:
             self.piles[i][-1].flip()
 
     def is_valid_move(self, destination_pile_number, card):
+        if self.piles[destination_pile_number] == []:
+            print("Empty pile")
+            if card.get_rank() != 13:
+                print("Not a king")
+                return False
+            return True
+
         if not card.is_face_up():
             print("Not face up")
             return False
@@ -32,7 +39,7 @@ class Tableau:
         if self.is_valid_move(destination_pile_number, source_pile[card_pos]):
             for j in range(card_pos, len(source_pile)):
                 destination_pile.append(source_pile.pop(card_pos))
-            if not source_pile[-1].is_face_up():
+            if source_pile != [] and not source_pile[-1].is_face_up():
                 source_pile[-1].flip()
 
     def is_card_on_top(self, pile_number, card):
