@@ -143,50 +143,67 @@ def on_drag_motion(event):
     event.widget.start_y = event.y
 
 
-def on_drop(event, pile=None, card_pos=None):
-    global waste_pile_cards
+def solve_drop_on_foundation(event, pile=None, card_pos=None):
+    global foundation_frame
+    print("Maybe drop on foundation")
 
-    if event.y_root < board_frame.winfo_rooty():
-        global foundation_frame
-        print("Maybe drop on foundation")
+    if event.x_root > foundation_frame.winfo_rootx() + 4 * \
+            (card_width + 20) + 60:
+        print("Not in fundation pile")
+        return
 
-        if event.x_root > foundation_frame.winfo_rootx() + 4 * \
-                (card_width + 20) + 60:
-            print("Not in fundation pile")
-            return
+    destination_pile = None
+    for i in range(4):
+        x_range = (foundation_frame.winfo_rootx() + i * (card_width + 40),
+                   foundation_frame.winfo_rootx() + (i + 1) *
+                   (card_width + 40))
 
-        destination_pile = None
-        for i in range(4):
-            x_range = (foundation_frame.winfo_rootx() + i * (card_width + 40),
-                       foundation_frame.winfo_rootx() + (i + 1) *
-                       (card_width + 40))
+        if x_range[0] <= event.x_root <= x_range[1]:
+            destination_pile = i
+            break
 
-            if x_range[0] <= event.x_root <= x_range[1]:
-                destination_pile = i
-                break
+    print("Destination pile:", destination_pile)
 
-        print("Destination pile:", destination_pile)
-
-        if destination_pile is None:
-            create_cards()
-            return
-
-        if game.foundation.is_valid_move(destination_pile,
-                                         game.tableau[pile][card_pos]):
-            game.foundation.add_card(destination_pile,
-                                     game.tableau[pile][card_pos])
-            game.tableau.remove_card_on_top(pile, game.tableau[pile][card_pos])
-            if game.tableau[pile]:
-                game.tableau[pile][-1].flip()
-            create_foundation()
-            create_cards()
-            return
-
+    if destination_pile is None:
         create_cards()
         return
 
-    global drag_object
+    if pile is None:
+        if game.foundation.is_valid_move(destination_pile,
+                                         waste_pile_cards[-1]):
+            game.foundation.add_card(destination_pile,
+                                     waste_pile_cards[-1])
+            waste_pile_cards.pop()
+            create_stock_waste()
+            create_foundation()
+            create_cards()
+            return
+        create_cards()
+        return
 
+    if game.foundation.is_valid_move(destination_pile,
+                                     game.tableau[pile][card_pos]):
+        game.foundation.add_card(destination_pile,
+                                 game.tableau[pile][card_pos])
+        game.tableau.remove_card_on_top(pile, game.tableau[pile][card_pos])
+        if game.tableau[pile]:
+            game.tableau[pile][-1].flip()
+        create_foundation()
+        create_cards()
+        return
+
+    create_cards()
+
+
+def on_drop(event, pile=None, card_pos=None):
+    global waste_pile_cards
+
+    # Drop on foundation
+    if event.y_root < board_frame.winfo_rooty():
+        solve_drop_on_foundation(event, pile, card_pos)
+        return
+
+    # Drop on tableau
     destination_pile = None
     for i in range(7):
         x_range = (board_frame.winfo_rootx() + i * (card_width + 50) + 50,
