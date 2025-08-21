@@ -1,4 +1,5 @@
 Solitaire Game
+
 An implementation of the classic Solitaire card game built with Python and Thinker.
 
 Features:
